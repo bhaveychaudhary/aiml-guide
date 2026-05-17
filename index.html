@@ -315,7 +315,7 @@ td{padding:8px 12px;color:var(--muted);border-bottom:1px solid var(--faint)}td s
     </div>
     <div class="news-tabs">
       <button class="news-tab active" id="tab-hn"       onclick="switchNewsTab('hn')">HN</button>
-      <button class="news-tab"        id="tab-newsapi"  onclick="switchNewsTab('newsapi')">NewsAPI</button>
+      <button class="news-tab"        id="tab-newsapi"  onclick="switchNewsTab('newsapi')">GNews</button>
       <button class="news-tab"        id="tab-arxiv"    onclick="switchNewsTab('arxiv')">Arxiv</button>
     </div>
     <div id="news-config-area"></div>
@@ -3260,9 +3260,9 @@ function renderConfigArea(tab) {
     const hasKey = !!savedKeys.newsapi;
     area.innerHTML = `
       <div class="news-config">
-        <div class="news-config-label">NewsAPI key — <a href="https://newsapi.org/register" target="_blank" style="color:#38bdf8">get free key</a> (500 req/day)</div>
+        <div class="news-config-label">GNews key — <a href="https://gnews.io" target="_blank" style="color:#38bdf8">get free key at gnews.io</a> (100 req/day, browser-friendly)</div>
         <div class="news-config-row">
-          <input class="news-key-input" id="newsapi-key-input" type="password" placeholder="${hasKey ? '••••••••••••••• (saved)' : 'Paste your key here'}" value="${savedKeys.newsapi || ''}">
+          <input class="news-key-input" id="newsapi-key-input" type="password" placeholder="${hasKey ? '••••••••••••••• (saved)' : 'Paste your GNews key here'}" value="${savedKeys.newsapi || ''}">
           <button class="news-save-btn" onclick="saveKey('newsapi')">Save</button>
         </div>
       </div>`;
@@ -3318,7 +3318,7 @@ async function loadNews(tab) {
     renderFeed(tab, cached);
     return;
   }
-  feed.innerHTML = `<div class="news-loading"><div class="spinner"></div><br>Fetching ${tab === 'hn' ? 'HackerNews' : tab === 'newsapi' ? 'NewsAPI' : 'Arxiv'}...</div>`;
+  feed.innerHTML = `<div class="news-loading"><div class="spinner"></div><br>Fetching ${tab === 'hn' ? 'HackerNews' : tab === 'newsapi' ? 'GNews' : 'Arxiv'}...</div>`;
   try {
     let items = [];
     if (tab === 'hn')      items = await fetchHN();
@@ -3367,23 +3367,24 @@ async function fetchHN() {
     }));
 }
 
-// ── NEWSAPI (via Cloudflare Worker proxy) ──
+// ── GNEWS (browser-friendly, no proxy needed) ──
 async function fetchNewsAPI() {
   if (!savedKeys.newsapi) {
-    throw new Error('No NewsAPI key saved. Paste your key above and click Save.');
+    throw new Error('No GNews key saved. Paste your key above and click Save.');
   }
-  const WORKER = 'https://newsapi-proxy.bhaveykumar001.workers.dev';
-  const q      = 'artificial intelligence OR LLM OR machine learning OR GPT OR Claude OR PyTorch OR transformer OR agents';
-  const url    = `${WORKER}?q=${encodeURIComponent(q)}&pageSize=20&apiKey=${savedKeys.newsapi}`;
-  const res    = await fetch(url);
-  if (!res.ok) throw new Error(`Proxy error ${res.status}`);
+  const q   = encodeURIComponent('artificial intelligence OR machine learning OR LLM OR PyTorch OR transformer OR AI agents');
+  const url = `https://gnews.io/api/v4/search?q=${q}&lang=en&max=15&sortby=publishedAt&token=${savedKeys.newsapi}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.errors?.[0] || `GNews error ${res.status}`);
+  }
   const data = await res.json();
-  if (data.error) throw new Error(data.error);
-  if (data.status !== 'ok') throw new Error(data.message || 'NewsAPI returned error');
-  return (data.articles || []).slice(0, 15).map(a => ({
+  if (!data.articles) throw new Error('No articles returned from GNews');
+  return data.articles.map(a => ({
     title:  a.title,
     url:    a.url,
-    source: a.source?.name || 'NewsAPI',
+    source: a.source?.name || 'GNews',
     tag:    'newsapi',
     time:   new Date(a.publishedAt).getTime(),
     extra:  a.source?.name || '',
