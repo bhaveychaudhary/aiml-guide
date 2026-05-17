@@ -3367,19 +3367,18 @@ async function fetchHN() {
     }));
 }
 
-// ── NEWSAPI ──
+// ── NEWSAPI (via Cloudflare Worker proxy) ──
 async function fetchNewsAPI() {
   if (!savedKeys.newsapi) {
     throw new Error('No NewsAPI key saved. Paste your key above and click Save.');
   }
-  const q   = encodeURIComponent('artificial intelligence OR machine learning OR LLM OR ChatGPT OR Claude AI');
-  const url = `https://newsapi.org/v2/everything?q=${q}&language=en&sortBy=publishedAt&pageSize=20&apiKey=${savedKeys.newsapi}`;
-  const res  = await fetch(url);
-  if (!res.ok) {
-    const err = await res.json().catch(()=>({}));
-    throw new Error(err.message || `NewsAPI error ${res.status}`);
-  }
+  const WORKER = 'https://newsapi-proxy.bhaveykumar001.workers.dev';
+  const q      = 'artificial intelligence OR LLM OR machine learning OR GPT OR Claude OR PyTorch OR transformer OR agents';
+  const url    = `${WORKER}?q=${encodeURIComponent(q)}&pageSize=20&apiKey=${savedKeys.newsapi}`;
+  const res    = await fetch(url);
+  if (!res.ok) throw new Error(`Proxy error ${res.status}`);
   const data = await res.json();
+  if (data.error) throw new Error(data.error);
   if (data.status !== 'ok') throw new Error(data.message || 'NewsAPI returned error');
   return (data.articles || []).slice(0, 15).map(a => ({
     title:  a.title,
