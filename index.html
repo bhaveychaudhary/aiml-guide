@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Engineering — Maths & PyTorch Guide v10</title>
+<title>AI Engineering — Maths & PyTorch Guide v11</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0e0e11;--surface:#16161a;--surface2:#1e1e24;--border:#2a2a34;--accent:#7c6af7;--accent2:#4ecdc4;--accent3:#f7c948;--text:#e8e8f0;--muted:#888899;--faint:#3a3a48;--green:#4ade80;--red:#f87171;--mono:'IBM Plex Mono',monospace;--display:'Fraunces',serif;--body:'DM Sans',sans-serif}
@@ -27,10 +27,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 .nav-link .w6tag{float:right;font-size:10px;font-family:var(--mono);color:#34d399;background:rgba(52,211,153,.12);padding:1px 6px;border-radius:4px}
 .nav-link .w7tag{float:right;font-size:10px;font-family:var(--mono);color:#fb923c;background:rgba(251,146,60,.12);padding:1px 6px;border-radius:4px}
 .nav-link .w8tag{float:right;font-size:10px;font-family:var(--mono);color:#38bdf8;background:rgba(56,189,248,.12);padding:1px 6px;border-radius:4px}
+.nav-link .w9tag{float:right;font-size:10px;font-family:var(--mono);color:#a78bfa;background:rgba(167,139,250,.12);padding:1px 6px;border-radius:4px}
 .tag-engine{background:rgba(192,132,252,.1);color:#c084fc;border:1px solid rgba(192,132,252,.2)}
 .tag-modern{background:rgba(52,211,153,.1);color:#34d399;border:1px solid rgba(52,211,153,.2)}
 .tag-impl{background:rgba(251,146,60,.1);color:#fb923c;border:1px solid rgba(251,146,60,.2)}
 .tag-agent{background:rgba(56,189,248,.1);color:#38bdf8;border:1px solid rgba(56,189,248,.2)}
+.tag-rag{background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2)}
 
 /* ── Floating action buttons ── */
 .fab-group{position:fixed;bottom:28px;right:24px;display:flex;flex-direction:column;gap:10px;z-index:900}
@@ -64,6 +66,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:15
 .rc-mod .recall-card-title{color:#34d399}
 .rc-impl .recall-card-title{color:#fb923c}
 .rc-agent .recall-card-title{color:#38bdf8}
+.rc-rag .recall-card-title{color:#a78bfa}
 
 /* ── Formula sheet ── */
 .formula-section{margin-bottom:32px}
@@ -427,6 +430,20 @@ td{padding:8px 12px;color:var(--muted);border-bottom:1px solid var(--faint)}td s
   <a href="#w8-native" class="nav-link">Native function calling <span class="w8tag">W8</span></a>
   <a href="#w8-gotchas" class="nav-link">Gotchas & limits <span class="w8tag">W8</span></a>
   <a href="#quiz-w8" class="nav-link">Week 8 quiz <span class="badge">10 Qs</span></a>
+
+  <div class="nav-section">Part 10 — RAG Pipelines <span style="color:#a78bfa;font-size:9px;margin-left:2px">W9</span></div>
+  <a href="#w9-problem" class="nav-link">The LLM paradox <span class="w9tag">W9</span></a>
+  <a href="#w9-workflow" class="nav-link">RAG vs Fine-tuning vs Stuffing <span class="w9tag">W9</span></a>
+  <a href="#w9-parsing" class="nav-link">Document parsing <span class="w9tag">W9</span></a>
+  <a href="#w9-chunking" class="nav-link">Chunking strategies <span class="w9tag">W9</span></a>
+  <a href="#w9-contextual" class="nav-link">Contextual retrieval <span class="w9tag">W9</span></a>
+  <a href="#w9-embeddings" class="nav-link">Embeddings & vector DBs <span class="w9tag">W9</span></a>
+  <a href="#w9-hybrid" class="nav-link">Hybrid search & RRF <span class="w9tag">W9</span></a>
+  <a href="#w9-reranking" class="nav-link">Reranking & compression <span class="w9tag">W9</span></a>
+  <a href="#w9-query" class="nav-link">Query transformation <span class="w9tag">W9</span></a>
+  <a href="#w9-prompt" class="nav-link">Prompt design & pipeline <span class="w9tag">W9</span></a>
+  <a href="#w9-metrics" class="nav-link">RAG metrics & vector DB arch <span class="w9tag">W9</span></a>
+  <a href="#quiz-w9" class="nav-link">Week 9 quiz <span class="badge">10 Qs</span></a>
 </nav>
 
 <!-- ===== MAIN ===== -->
@@ -435,7 +452,7 @@ td{padding:8px 12px;color:var(--muted);border-bottom:1px solid var(--faint)}td s
 <div class="section-hero">
   <div class="eyebrow">100xDevs AI/ML Bootcamp companion</div>
   <h1>Maths & PyTorch<br><em style="font-style:italic;font-weight:300">from first principles</em></h1>
-  <p style="margin-top:1rem;font-size:15px;max-width:580px">Weeks 2–8 integrated. From maths foundations to building a production-grade ReAct agent from scratch — the complete 100xDevs AI/ML bootcamp companion. Use ⚡ for quick recall and ∑ for the formula sheet.</p>
+  <p style="margin-top:1rem;font-size:15px;max-width:580px">Weeks 2–9 integrated. From maths foundations to production RAG pipelines — the complete 100xDevs AI/ML bootcamp companion. Use ⚡ for quick recall and ∑ for the formula sheet.</p>
 </div>
 <div class="progress-bar-wrap"><div class="progress-bar" id="global-progress"></div></div>
 
@@ -2411,9 +2428,387 @@ print(f"All shapes preserved {'✅' if x.shape==out.shape else '❌'}")</textare
   </div>
 </div>
 
+<!-- ================================================================ PART 10: RAG PIPELINES -->
+<h2 id="rag">Part 10 — Retrieval-Augmented Generation (RAG)</h2>
+<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);border-radius:20px;padding:4px 12px;font-size:11px;font-family:var(--mono);color:#a78bfa;margin-bottom:1.5rem"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block"></span>Week 09 · 13 Mar 2026 · RAG Pipelines · ChromaDB + OpenAI</div>
+
+<section id="w9-problem"><span class="chapter-tag tag-rag">RAG · 01</span>
+<h3>The LLM paradox — why they need RAG</h3>
+<p>LLMs are extraordinary reasoning engines, but they are fundamentally <strong>isolated</strong>. They live inside a frozen snapshot of the internet, unable to see your world.</p>
+<table>
+<tr><th>Problem</th><th>What it means</th><th>Real-world example</th></tr>
+<tr><td><strong>🧊 Frozen in time</strong></td><td>Knowledge cutoff = blindness beyond that date</td><td>"What were ACME's Q3 2024 results?" → no idea if trained before Oct 2024</td></tr>
+<tr><td><strong>🔒 No private knowledge</strong></td><td>Trained on public internet — never saw your internal docs</td><td>"What's our remote work stipend?" → hallucinates generic answer</td></tr>
+<tr><td><strong>🤥 Confident hallucination</strong></td><td>When they don't know, they invent with full confidence</td><td>"What JIRA ticket tracks the Redis bug?" → fabricates a number</td></tr>
+</table>
+<div class="callout callout-danger"><strong>The core insight</strong><p>Without RAG, your LLM is a very expensive, very confident guesser about your private data. RAG is the hand that opens the jar — reaching out to grab YOUR documents at query time and feeding them straight into the model's context.</p></div>
+<div class="math-box">RAG in one line: User Question → RETRIEVE relevant chunks → AUGMENT prompt → GENERATE grounded answer<small>Ingestion happens once (async). Retrieval + Generation happens per query (real-time).</small></div>
+</section><hr class="divider">
+
+<section id="w9-workflow"><span class="chapter-tag tag-rag">RAG · 02</span>
+<h3>RAG vs Fine-tuning vs Context Stuffing</h3>
+<table>
+<tr><th>Strategy</th><th>When to use</th><th>When NOT to use</th></tr>
+<tr><td><strong>Context Stuffing</strong></td><td>Small knowledge base (&lt;500 pages). Dump it all in the prompt.</td><td>Dataset is huge (10K+ pages). Prompt cost explodes.</td></tr>
+<tr><td><strong>Fine-tuning</strong></td><td>Model needs a new skill, style, or format.</td><td>Adding factual knowledge. Fine-tuning for facts = unreliable.</td></tr>
+<tr><td><strong>RAG</strong></td><td>Model doesn't know something. External/private data. Too large for a single prompt.</td><td>When you need the model to change its behaviour, not its knowledge.</td></tr>
+</table>
+<div class="callout callout-tip"><strong>The decision rule</strong><p>Want the model to <strong>know something new</strong>? → RAG. Want it to <strong>do something differently</strong>? → Fine-tuning. Information is small enough to fit in the prompt? → Context Stuffing (but if data changes, RAG is easier to maintain).</p></div>
+<h3>The end-to-end architecture</h3>
+<div class="pipeline-box">
+  <div class="pipe-step"><div class="pipe-label">Ingestion Phase (run once or on data update)</div><div class="pipe-content"><strong>Docs → Parse → Chunk → Contextualize (LLM) → Embed → Store</strong> in Vector DB + BM25 Index</div></div>
+  <div class="pipe-arrow">↓</div>
+  <div class="pipe-step"><div class="pipe-label">Retrieval &amp; Generation Phase (real-time, per query)</div><div class="pipe-content"><strong>User Question → Transform Query → Hybrid Search (Semantic + BM25 → RRF) → Rerank → Compress → Augment Prompt → LLM → Answer with Citations</strong></div></div>
+</div>
+</section><hr class="divider">
+
+<section id="w9-parsing"><span class="chapter-tag tag-rag">RAG · 03</span>
+<h3>Ingestion Part 1 — Document parsing</h3>
+<div class="callout callout-warn"><strong>Garbage in, garbage out</strong><p>Raw documents are almost never clean text. The quality of your parser directly determines the ceiling of your entire RAG system.</p></div>
+<table>
+<tr><th>Format</th><th>The parsing nightmare</th><th>What breaks</th></tr>
+<tr><td><strong>PDFs</strong></td><td>Multi-column layouts read left-to-right ignoring columns</td><td>Tables get destroyed or misaligned</td></tr>
+<tr><td><strong>Word (.docx)</strong></td><td>Structural headers and metadata lost as raw text</td><td>Hierarchical structure (H1 &gt; H2 &gt; H3) flattened</td></tr>
+<tr><td><strong>HTML</strong></td><td>Nav bars, footers, ads, &lt;script&gt; tags dilute content</td><td>80% of extracted text is noise</td></tr>
+</table>
+<p>A good parser preserves the document's <strong>tree structure</strong> — chapters → sections → paragraphs — so chunking can happen at logical boundaries, not arbitrary character counts.</p>
+<table>
+<tr><th>Tool</th><th>Best for</th><th>Key advantage</th></tr>
+<tr><td><strong>Unstructured.io</strong></td><td>General purpose, multi-format</td><td>Standardises various file types into one JSON schema</td></tr>
+<tr><td><strong>LlamaParse</strong></td><td>Complex PDFs, nested tables</td><td>Uses vision models to salvage layouts other parsers destroy</td></tr>
+<tr><td><strong>Docling</strong></td><td>High-speed, structure-aware</td><td>Open-source, fast, deep understanding of document hierarchy</td></tr>
+</table>
+</section><hr class="divider">
+
+<section id="w9-chunking"><span class="chapter-tag tag-rag">RAG · 04</span>
+<h3>Ingestion Part 2 — Chunking strategies</h3>
+<p>Once parsed, a document is too large to embed as a single vector. It must be split into chunks. <strong>This is where 80% of RAG systems fail.</strong></p>
+<div class="callout callout-danger"><strong>Every cut destroys context</strong><p>The art of chunking is choosing where to cut — at logical boundaries, not arbitrary character counts.</p></div>
+<h3>Strategy 1 — Fixed-size chunking (the naive approach)</h3>
+<p>Split every N tokens with overlap. Ignores all boundaries. <strong>Faithfulness Score: ~0.47 💔</strong> — often cuts mid-sentence or mid-thought.</p>
+<pre><span class="kw">def</span> <span class="fn">chunk_fixed</span>(text: str, chunk_size: int = <span class="nm">200</span>, overlap: int = <span class="nm">50</span>) -&gt; List[str]:
+    words = text.<span class="fn">split</span>()
+    chunks = []
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">0</span>, <span class="fn">len</span>(words), chunk_size - overlap):
+        chunk = <span class="st">" "</span>.<span class="fn">join</span>(words[i:i + chunk_size])
+        <span class="kw">if</span> chunk.<span class="fn">strip</span>(): chunks.<span class="fn">append</span>(chunk.<span class="fn">strip</span>())
+    <span class="kw">return</span> chunks</pre>
+<h3>Strategy 2 — Recursive chunking (the standard)</h3>
+<p>Splits logically: paragraphs → sentences → characters. Respects natural boundaries. <strong>Faithfulness Score: ~0.80 ✅</strong></p>
+<pre><span class="kw">def</span> <span class="fn">chunk_recursive</span>(text: str, max_size: int = <span class="nm">200</span>) -&gt; List[str]:
+    paragraphs = [p.<span class="fn">strip</span>() <span class="kw">for</span> p <span class="kw">in</span> text.<span class="fn">split</span>(<span class="st">"
+
+"</span>) <span class="kw">if</span> p.<span class="fn">strip</span>()]
+    chunks = []
+    <span class="kw">for</span> para <span class="kw">in</span> paragraphs:
+        words = para.<span class="fn">split</span>()
+        <span class="kw">if</span> <span class="fn">len</span>(words) &lt;= max_size:
+            chunks.<span class="fn">append</span>(para)
+        <span class="kw">else</span>:
+            sentences = para.<span class="fn">replace</span>(<span class="st">". "</span>, <span class="st">".
+"</span>).<span class="fn">split</span>(<span class="st">"
+"</span>)
+            current, current_len = [], <span class="nm">0</span>
+            <span class="kw">for</span> sent <span class="kw">in</span> sentences:
+                sent_len = <span class="fn">len</span>(sent.<span class="fn">split</span>())
+                <span class="kw">if</span> current_len + sent_len &gt; max_size <span class="kw">and</span> current:
+                    chunks.<span class="fn">append</span>(<span class="st">" "</span>.<span class="fn">join</span>(current))
+                    current, current_len = [sent], sent_len
+                <span class="kw">else</span>:
+                    current.<span class="fn">append</span>(sent); current_len += sent_len
+            <span class="kw">if</span> current: chunks.<span class="fn">append</span>(<span class="st">" "</span>.<span class="fn">join</span>(current))
+    <span class="kw">return</span> [c <span class="kw">for</span> c <span class="kw">in</span> chunks <span class="kw">if</span> <span class="fn">len</span>(c.<span class="fn">split</span>()) &gt; <span class="nm">10</span>]</pre>
+<div class="callout callout-tip"><strong>Always prefer recursive</strong><p>Fixed cuts mid-thought. Recursive respects paragraph boundaries. Use fixed-size only when you have a specific reason.</p></div>
+<table>
+<tr><th>Advanced method</th><th>How it works</th><th>Best for</th></tr>
+<tr><td><strong>Structure-aware</strong></td><td>Chunks on Markdown headers (#, ##, ###)</td><td>Docs with clear header hierarchy</td></tr>
+<tr><td><strong>AST-based</strong></td><td>Parses code via Abstract Syntax Trees — functions/classes stay intact</td><td>Code repositories</td></tr>
+<tr><td><strong>Parent-Child (Small-to-Big)</strong></td><td>Embed small chunks for precision search; retrieve larger parent for context</td><td>Best of both worlds</td></tr>
+</table>
+</section><hr class="divider">
+
+<section id="w9-contextual"><span class="chapter-tag tag-rag">RAG · 05</span>
+<h3>Contextual retrieval — the Anthropic technique</h3>
+<p>Imagine a chunk that says <em>"revenue grew 3%"</em>. Which company? Which year? The chunk was ripped from its document — its identity is lost.</p>
+<p>The fix: use an LLM <strong>during ingestion</strong> (one-time cost) to inject surrounding context into every chunk before embedding it.</p>
+<pre><span class="kw">def</span> <span class="fn">contextualize_chunk</span>(chunk: str, full_doc: str, title: str) -&gt; str:
+    resp = ant.messages.<span class="fn">create</span>(
+        model=<span class="st">"claude-sonnet-4-20250514"</span>,
+        max_tokens=<span class="nm">150</span>,
+        messages=[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>:
+            <span class="st">f'Document: &lt;doc title="{title}"&gt;{full_doc}&lt;/doc&gt;
+'</span>
+            <span class="st">f'Chunk: &lt;chunk&gt;{chunk}&lt;/chunk&gt;
+'</span>
+            <span class="st">'Write 2-3 sentences situating this chunk: which doc, section, entities.'</span>
+        }])
+    ctx = resp.content[<span class="nm">0</span>].text.<span class="fn">strip</span>()
+    <span class="kw">return</span> <span class="st">f"{ctx}
+
+{chunk}"</span></pre>
+<div class="callout callout-info"><strong>Result: 67% fewer retrieval failures</strong><p>When combined with BM25 and reranking. The embedding now captures <em>what the chunk is about</em>, not just what it literally says. One-time ingestion cost for a massive query-time gain.</p></div>
+<div class="shape-trace">
+<div class="shape-row"><span class="shape-pill sp-red">BEFORE</span><span class="shape-label">"Revenue and Growth: ACME Corporation reported total revenue of $4.2 billion for Q3 2024..."</span></div>
+<div class="shape-row"><span class="shape-pill sp-green">AFTER</span><span class="shape-label">"This excerpt is from ACME's Q3 2024 financial report, Revenue section... [original chunk]"</span></div>
+</div>
+</section><hr class="divider">
+
+<section id="w9-embeddings"><span class="chapter-tag tag-rag">RAG · 06</span>
+<h3>Embeddings &amp; vector databases</h3>
+<p>Embeddings transform text into <strong>high-dimensional vectors</strong> (arrays of floats, e.g. 1536 dims). Similar meanings = nearby points in vector space. "puppy" and "young dog" have vectors pointing in almost the same direction, despite sharing zero characters.</p>
+<table>
+<tr><th>Provider</th><th>Model</th><th>Dims</th><th>Best for</th></tr>
+<tr><td>OpenAI</td><td>text-embedding-3-small</td><td>1536</td><td>General purpose, great quality/cost ratio</td></tr>
+<tr><td>Cohere</td><td>embed-english-v3</td><td>1024</td><td>Multi-language, strong performance</td></tr>
+<tr><td>Jina AI</td><td>jina-embeddings-v3</td><td>1024</td><td>Open-source alternative</td></tr>
+</table>
+<table>
+<tr><th>Tier</th><th>Tools</th><th>Use case</th></tr>
+<tr><td>Prototyping</td><td>ChromaDB, FAISS</td><td>Local development, fast iteration. Run in-memory.</td></tr>
+<tr><td>Production</td><td>Pinecone, Weaviate, Qdrant</td><td>Scalable, cloud-native, billion-vector capable.</td></tr>
+<tr><td>SQL-native</td><td>pgvector (PostgreSQL)</td><td>Already have Postgres? Add vector search as an extension.</td></tr>
+</table>
+<div class="callout callout-info"><strong>Metadata is crucial</strong><p>Never store just the vector. Always attach: <code>{"source": "handbook.pdf", "page": 3, "date": "2024-01-15"}</code>. Essential for pre-search filtering and post-generation citations.</p></div>
+<h3>Vector DB internals — the HNSW graph</h3>
+<p>A Collection contains Points. Each Point has: an <strong>ID</strong>, a <strong>vector</strong>, and a <strong>payload</strong> (metadata). The heart is the <strong>HNSW graph</strong> (Hierarchical Navigable Small World) — enabling sub-millisecond ANN search without O(N) linear scans.</p>
+<table>
+<tr><th>Distance metric</th><th>Formula</th><th>When to use</th></tr>
+<tr><td>Cosine Similarity</td><td>cos(θ) = A·B / (‖A‖·‖B‖)</td><td>Normalised embeddings (most common)</td></tr>
+<tr><td>Dot Product</td><td>A · B</td><td>When magnitude matters (popularity signals)</td></tr>
+<tr><td>Euclidean Distance</td><td>‖A − B‖₂</td><td>Spatial clustering tasks</td></tr>
+</table>
+</section><hr class="divider">
+
+<section id="w9-hybrid"><span class="chapter-tag tag-rag">RAG · 07</span>
+<h3>Retrieval Part 1 — Hybrid search &amp; RRF</h3>
+<p>Relying only on vector search is a classic mistake. <strong>Industry consensus: Hybrid beats semantic alone. Every time.</strong></p>
+<table>
+<tr><th>Search type</th><th>Mechanism</th><th>Strength</th><th>Weakness</th></tr>
+<tr><td><strong>Semantic (Dense)</strong></td><td>Embedding cosine similarity. Finds meaning.</td><td>"car" matches "automobile"</td><td>Terrible at exact matches: dates, IDs, commands</td></tr>
+<tr><td><strong>Keyword (BM25)</strong></td><td>Token frequency (TF-IDF). Finds exact words.</td><td>"JIRA-AUTH-2847" found instantly</td><td>Fails on synonyms: "sick leave" vs "medical absence"</td></tr>
+</table>
+<h3>Reciprocal Rank Fusion (RRF)</h3>
+<p>Fuses two ranked lists into one. Elegant — no hyperparameters to tune.</p>
+<pre><span class="kw">def</span> <span class="fn">reciprocal_rank_fusion</span>(semantic, keyword, k=<span class="nm">60</span>):
+    scores = {}
+    <span class="kw">for</span> rank, (idx, _) <span class="kw">in</span> <span class="fn">enumerate</span>(semantic):
+        scores[idx] = scores.<span class="fn">get</span>(idx, <span class="nm">0</span>) + <span class="nm">1</span> / (k + rank + <span class="nm">1</span>)
+    <span class="kw">for</span> rank, (idx, _) <span class="kw">in</span> <span class="fn">enumerate</span>(keyword):
+        scores[idx] = scores.<span class="fn">get</span>(idx, <span class="nm">0</span>) + <span class="nm">1</span> / (k + rank + <span class="nm">1</span>)
+    <span class="kw">return</span> <span class="fn">sorted</span>(scores.<span class="fn">items</span>(), key=<span class="kw">lambda</span> x: x[<span class="nm">1</span>], reverse=<span class="kw">True</span>)</pre>
+<h3>Metadata filtering — the "WHERE" clause</h3>
+<pre><span class="c"># Filter by date, source, or category BEFORE vector search</span>
+results = vector_db.<span class="fn">search</span>(query, filter={<span class="st">"year"</span>: <span class="nm">2024</span>})</pre>
+</section><hr class="divider">
+
+<section id="w9-reranking"><span class="chapter-tag tag-rag">RAG · 08</span>
+<h3>Retrieval Part 2 — Reranking &amp; compression</h3>
+<p>One search pass isn't enough. You need <strong>two passes</strong>:</p>
+<table>
+<tr><th>Pass</th><th>Model type</th><th>Speed</th><th>What it does</th></tr>
+<tr><td><strong>Pass 1 (Bi-Encoder)</strong></td><td>Embeds query and docs separately</td><td>⚡ Fast</td><td>Scans millions of records. Returns top 50–100 candidates.</td></tr>
+<tr><td><strong>Pass 2 (Cross-Encoder)</strong></td><td>Reads [Query + Document] together</td><td>🐢 Slow</td><td>Understands deep nuance. Re-orders top 50 → final best 3–5.</td></tr>
+</table>
+<pre><span class="kw">from</span> sentence_transformers <span class="kw">import</span> CrossEncoder
+reranker = <span class="fn">CrossEncoder</span>(<span class="st">"cross-encoder/ms-marco-MiniLM-L-6-v2"</span>)
+
+<span class="kw">def</span> <span class="fn">rerank</span>(question: str, results, top_k: int = <span class="nm">3</span>):
+    pairs = [(question, r[<span class="st">"chunk"</span>]) <span class="kw">for</span> r <span class="kw">in</span> results]
+    scores = reranker.<span class="fn">predict</span>(pairs)
+    <span class="kw">for</span> r, s <span class="kw">in</span> <span class="fn">zip</span>(results, scores): r[<span class="st">"rerank_score"</span>] = <span class="fn">float</span>(s)
+    <span class="kw">return</span> <span class="fn">sorted</span>(results, key=<span class="kw">lambda</span> x: x[<span class="st">"rerank_score"</span>], reverse=<span class="kw">True</span>)[:top_k]</pre>
+<div class="callout callout-tip"><strong>The Job Interview analogy</strong><p><strong>Bi-Encoder = Resume Scanner.</strong> Fast automated scan of 10,000 resumes → 100 candidates. <strong>Cross-Encoder = Human Interview.</strong> Compare each candidate against the specific job description → top 5 hires. Same two-pass pattern.</p></div>
+<h3>The U-shaped attention curve — "Lost in the Middle"</h3>
+<p>LLMs don't pay equal attention to all parts of a long prompt. Attention is <strong>U-shaped</strong> — strong at the beginning and end, weak in the middle.</p>
+<div class="shape-trace">
+<div class="shape-row"><span class="shape-pill sp-green">Strong</span><span class="shape-label">→ Very beginning of the context window</span></div>
+<div class="shape-row"><span class="shape-pill sp-red">Weak</span><span class="shape-label">→ Middle of the context — "Lost in the Middle" syndrome</span></div>
+<div class="shape-row"><span class="shape-pill sp-green">Strong</span><span class="shape-label">→ Very end (right before the question) ← place your best chunks here</span></div>
+</div>
+</section><hr class="divider">
+
+<section id="w9-query"><span class="chapter-tag tag-rag">RAG · 09</span>
+<h3>Query transformation — making questions better</h3>
+<p>Users ask terrible questions. Query transformation fixes raw input <em>before</em> it hits the vector database.</p>
+<table>
+<tr><th>Strategy</th><th>How it works</th><th>When to use</th></tr>
+<tr><td><strong>1. Rewriting</strong></td><td>LLM rewrites messy chat history into a clean, standalone search query</td><td>Chatbot follow-up questions (anaphora resolution)</td></tr>
+<tr><td><strong>2. Multi-Query</strong></td><td>Generate 3–5 different phrasings of the same question. Search all. Deduplicate.</td><td>When a single phrasing might miss relevant docs</td></tr>
+<tr><td><strong>3. HyDE</strong></td><td>Generate a <em>fake answer</em> first. Embed the fake answer and search with it.</td><td>The hypothetical answer is often closer to matching documents than the original short question</td></tr>
+<tr><td><strong>4. Step-Back</strong></td><td>Ask a broader background question first, retrieve foundational context, then answer</td><td>Complex questions requiring prerequisite knowledge</td></tr>
+</table>
+<div class="callout callout-info"><strong>Why HyDE works</strong><p>A short question like "Who won?" embeds in a very different part of vector space from the answer document. A <em>fake answer</em> is much closer to the actual document embedding than the sparse question itself.</p></div>
+</section><hr class="divider">
+
+<section id="w9-prompt"><span class="chapter-tag tag-rag">RAG · 10</span>
+<h3>RAG prompt design &amp; the full pipeline</h3>
+<div class="callout callout-danger"><strong>RAG without citations is just a fancier hallucination machine</strong><p>If the model can say anything without pointing to evidence, you haven't solved the problem — you've disguised it.</p></div>
+<table>
+<tr><th>Rule</th><th>Instruction to the LLM</th><th>Why</th></tr>
+<tr><td><strong>Grounding</strong></td><td>"Answer ONLY from the provided context."</td><td>Stops the model from using parametric knowledge</td></tr>
+<tr><td><strong>Escape hatch</strong></td><td>"If you don't know, say 'I don't have enough information.'"</td><td>Prevents confident hallucinations</td></tr>
+<tr><td><strong>Citations</strong></td><td>"Cite your sources with metadata."</td><td>Receipts. Trust is built on traceability.</td></tr>
+<tr><td><strong>Structure</strong></td><td>Label each chunk with [Source: doc_title] tags</td><td>Helps the model distinguish multiple retrieved chunks</td></tr>
+</table>
+<pre>prompt = <span class="st">f"""Answer based ONLY on the context below.
+If the context doesn't have the answer, say "I don't have enough information."
+Cite your sources.
+
+Context:
+{context}
+
+Question: {question}
+Answer:"""</span></pre>
+<div class="callout callout-info"><strong>Watch the retrieved chunks, not just the answer</strong><p>The LLM might paper over bad retrieval with parametric knowledge. Chunks reveal the true quality of your pipeline. A correct answer from wrong chunks is a liability, not a success.</p></div>
+</section><hr class="divider">
+
+<section id="w9-metrics"><span class="chapter-tag tag-rag">RAG · 11</span>
+<h3>RAG metrics &amp; the upgrade path</h3>
+<table>
+<tr><th></th><th>Retrieved ✅</th><th>Not Retrieved ❌</th></tr>
+<tr><td><strong>Relevant</strong></td><td>True Positive (TP) 🎯</td><td>False Negative (FN) 😢</td></tr>
+<tr><td><strong>Irrelevant</strong></td><td>False Positive (FP) 🗑</td><td>True Negative (TN) ✅</td></tr>
+</table>
+<div class="math-box">Precision = TP / (TP + FP)  |  Recall = TP / (TP + FN)<small>Precision: "Of everything retrieved, how much was useful?" | Recall: "Of all relevant chunks, how many did I find?"</small></div>
+<div class="callout callout-tip"><strong>RAG optimisation order: recall first, then precision</strong><p>Optimise for Recall first (so the LLM always has the answer somewhere in context), then use Reranking to boost Precision (filter out garbage before it hits the prompt).</p></div>
+<h3>The 7-level upgrade path</h3>
+<div class="step-block">
+  <div class="step-item"><div class="step-label">Level 0</div><div class="step-content">Stuff context window (small docs only)</div></div>
+  <div class="step-item"><div class="step-label">Level 1</div><div class="step-content"><strong>Naive semantic search</strong> — chunk, embed, store in ChromaDB, search</div></div>
+  <div class="step-item"><div class="step-label">Level 2</div><div class="step-content"><strong>Better chunking</strong> — recursive, structure-aware</div></div>
+  <div class="step-item"><div class="step-label">Level 3</div><div class="step-content"><strong>Contextual retrieval</strong> — Anthropic's technique, 67% fewer failures</div></div>
+  <div class="step-item"><div class="step-label">Level 4</div><div class="step-content"><strong>Hybrid search</strong> — semantic + BM25 + RRF fusion</div></div>
+  <div class="step-item"><div class="step-label">Level 5</div><div class="step-content"><strong>Reranking</strong> — cross-encoder re-scores top candidates</div></div>
+  <div class="step-item"><div class="step-label">Level 6</div><div class="step-content"><strong>Query transformation</strong> — rewriting, multi-query, HyDE, step-back</div></div>
+  <div class="step-item"><div class="step-label">Level 7</div><div class="step-content"><strong>Agentic RAG</strong> — Self-RAG, GraphRAG, RAPTOR (next class)</div></div>
+</div>
+
+<div class="quiz-block" id="quiz-w9">
+  <h4>📝 Week 9 Quiz — RAG Pipelines (10 questions)</h4>
+  <div id="w9q"></div>
+</div>
+</section>
+
+<!-- ── W9 EXERCISES ── -->
+<div class="ex-block" id="ex-w9-1">
+  <div class="ex-header" onclick="toggleEx('ex-w9-1')"><div class="ex-header-left"><span class="ex-tier-badge tier-1">Tier 1</span><span class="ex-title">Complete a recursive chunker and verify boundary behaviour</span></div><div style="display:flex;align-items:center;gap:10px"><span class="ex-xp-tag">+15 XP</span><span class="ex-chevron" id="ex-w9-1-chev">▼</span></div></div>
+  <div class="ex-body" id="ex-w9-1-body">
+    <div class="ex-description">Fill in the blanks to complete the recursive chunker. It should split on paragraph boundaries first, then sentence boundaries if needed.</div>
+    <div class="ex-expected">Fixed chunks: 3
+Recursive chunks: 2
+Chunk 0 ends with a full sentence: True</div>
+    <textarea class="ex-code-area" id="ex-w9-1-code">text = """Q3 2024 saw record revenue of $4.2 billion. Growth was 12% year-on-year.
+
+Employee headcount rose to 34500. We added 1847 people this quarter."""
+
+def chunk_fixed(text, size=10, overlap=2):
+    words = text.split()
+    return [" ".join(words[i:i+size]) for i in range(0, len(words), size-overlap)]
+
+def chunk_recursive(text, max_size=15):
+    paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
+    chunks = []
+    for para in paragraphs:
+        if len(para.split()) <= max_size:
+            chunks.append(para)
+        else:
+            sentences = para.split(". ")
+            chunks.extend(sentences)
+    return [c for c in chunks if len(c.split()) > 2]
+
+fixed = chunk_fixed(text)
+recursive = chunk_recursive(text)
+print(f"Fixed chunks: {len(fixed)}")
+print(f"Recursive chunks: {len(recursive)}")
+print(f"Chunk 0 ends with a full sentence: {recursive[0].strip().endswith('.')}")</textarea>
+    <div class="ex-actions"><button class="ex-btn ex-btn-run" onclick="runCode('ex-w9-1',15)">▶ Run &amp; Check</button><button class="ex-btn ex-btn-solution" onclick="showSolution('ex-w9-1')">👁 Solution</button><a class="ex-btn-colab" href="https://colab.research.google.com/drive/1BxLQAEFBJSunIZBHy0LqgX2uIOsY_Iht" target="_blank">🔗 Colab</a><span class="ex-status" id="ex-w9-1-status"></span></div>
+    <div class="runner-output" id="ex-w9-1-out"></div>
+    <div class="ex-solution-box" id="ex-w9-1-sol"><pre><span class="c"># Split on paragraph boundaries, then on sentence boundaries if too long</span>
+paragraphs=[p.<span class="fn">strip</span>() <span class="kw">for</span> p <span class="kw">in</span> text.<span class="fn">split</span>(<span class="st">"\n\n"</span>) <span class="kw">if</span> p.<span class="fn">strip</span>()]
+<span class="kw">if</span> <span class="fn">len</span>(para.<span class="fn">split</span>()) &lt;= max_size: chunks.<span class="fn">append</span>(para)</pre></div>
+    <div class="ex-done-banner" id="ex-w9-1-done">🎉 +15 XP! This is the foundation 80% of RAG systems get wrong.</div>
+  </div>
+</div>
+
+<div class="ex-block" id="ex-w9-2">
+  <div class="ex-header" onclick="toggleEx('ex-w9-2')"><div class="ex-header-left"><span class="ex-tier-badge tier-2">Tier 2</span><span class="ex-title">Implement Reciprocal Rank Fusion for hybrid search</span></div><div style="display:flex;align-items:center;gap:10px"><span class="ex-xp-tag">+25 XP</span><span class="ex-chevron" id="ex-w9-2-chev">▼</span></div></div>
+  <div class="ex-body" id="ex-w9-2-body">
+    <div class="ex-description">Implement RRF to fuse a semantic ranked list and a BM25 ranked list. Score for each doc = sum of 1/(k + rank + 1) across both lists. Return sorted by score descending.</div>
+    <div class="ex-expected">Fused ranking (top 3):
+idx=2 score=0.0328
+idx=0 score=0.0161
+idx=1 score=0.0161</div>
+    <textarea class="ex-code-area" id="ex-w9-2-code">def reciprocal_rank_fusion(semantic, keyword, k=60):
+    scores = {}
+    for rank, (idx, _) in enumerate(semantic):
+        scores[idx] = scores.get(idx, 0) + 1 / (k + rank + 1)
+    for rank, (idx, _) in enumerate(keyword):
+        scores[idx] = scores.get(idx, 0) + 1 / (k + rank + 1)
+    return sorted(scores.items(), key=lambda x: x[1], reverse=True)
+
+semantic = [(2, 0.12), (0, 0.34), (3, 0.56)]
+keyword  = [(2, 8.5),  (1, 6.2), (0, 4.1)]
+result = reciprocal_rank_fusion(semantic, keyword)
+print("Fused ranking (top 3):")
+for idx, score in result[:3]:
+    print(f"  idx={idx} score={score:.4f}")</textarea>
+    <div class="ex-actions"><button class="ex-btn ex-btn-run" onclick="runCode('ex-w9-2',25)">▶ Run &amp; Check</button><button class="ex-btn ex-btn-solution" onclick="showSolution('ex-w9-2')">👁 Solution</button><a class="ex-btn-colab" href="https://colab.research.google.com/drive/1BxLQAEFBJSunIZBHy0LqgX2uIOsY_Iht" target="_blank">🔗 Colab</a><span class="ex-status" id="ex-w9-2-status"></span></div>
+    <div class="runner-output" id="ex-w9-2-out"></div>
+    <div class="ex-solution-box" id="ex-w9-2-sol"><pre><span class="kw">for</span> rank,(idx,_) <span class="kw">in</span> <span class="fn">enumerate</span>(semantic):
+    scores[idx]=scores.<span class="fn">get</span>(idx,<span class="nm">0</span>)+<span class="nm">1</span>/(k+rank+<span class="nm">1</span>)
+<span class="kw">for</span> rank,(idx,_) <span class="kw">in</span> <span class="fn">enumerate</span>(keyword):
+    scores[idx]=scores.<span class="fn">get</span>(idx,<span class="nm">0</span>)+<span class="nm">1</span>/(k+rank+<span class="nm">1</span>)</pre></div>
+    <div class="ex-done-banner" id="ex-w9-2-done">🎉 +25 XP! RRF is used inside every serious production RAG system.</div>
+  </div>
+</div>
+
+<div class="ex-block" id="ex-w9-3">
+  <div class="ex-header" onclick="toggleEx('ex-w9-3')"><div class="ex-header-left"><span class="ex-tier-badge tier-3">Tier 3</span><span class="ex-title">Build a naive RAG pipeline from scratch (no external deps)</span></div><div style="display:flex;align-items:center;gap:10px"><span class="ex-xp-tag">+35 XP</span><span class="ex-chevron" id="ex-w9-3-chev">▼</span></div></div>
+  <div class="ex-body" id="ex-w9-3-body">
+    <div class="ex-description">Build a minimal in-memory vector store using cosine similarity. The fake embeddings are deterministic (hash-seeded random). Your job: implement the sorted() key in naive_rag() so retrieval returns the most relevant chunk.</div>
+    <div class="ex-expected">Query: remote work stipend
+Top chunk: Remote Work Policy: Employees receive a $1500 home office stipend.
+Score: > 0.5</div>
+    <textarea class="ex-code-area" id="ex-w9-3-code">import math, random
+
+DOCS = [
+    "Q3 Revenue: ACME reported 4.2 billion revenue, up 12% YoY.",
+    "Remote Work Policy: Employees receive a $1500 home office stipend.",
+    "Engineering: The Redis replication bug AUTH-2847 is unresolved.",
+]
+
+def fake_embed(text, dim=8):
+    random.seed(hash(text) % 2**31)
+    return [random.gauss(0,1) for _ in range(dim)]
+
+def cosine_sim(a, b):
+    dot = sum(x*y for x,y in zip(a,b))
+    na  = math.sqrt(sum(x*x for x in a))
+    nb  = math.sqrt(sum(x*x for x in b))
+    return dot / (na * nb + 1e-9)
+
+store = [(doc, fake_embed(doc)) for doc in DOCS]
+
+def naive_rag(query, top_k=1):
+    q_emb = fake_embed(query)
+    results = sorted(store, key=lambda item: cosine_sim(q_emb, item[1]), reverse=True)
+    return results[:top_k]
+
+query = "remote work stipend"
+top = naive_rag(query)
+print(f"Query: {query}")
+print(f"Top chunk: {top[0][0]}")
+score = cosine_sim(fake_embed(query), top[0][1])
+print(f"Score: {score:.4f} (> 0.5: {score > 0.5})")</textarea>
+    <div class="ex-actions"><button class="ex-btn ex-btn-run" onclick="runCode('ex-w9-3',35)">▶ Run &amp; Check</button><button class="ex-btn ex-btn-solution" onclick="showSolution('ex-w9-3')">👁 Solution</button><a class="ex-btn-colab" href="https://colab.research.google.com/drive/1BxLQAEFBJSunIZBHy0LqgX2uIOsY_Iht" target="_blank">🔗 Colab</a><span class="ex-status" id="ex-w9-3-status"></span></div>
+    <div class="runner-output" id="ex-w9-3-out"></div>
+    <div class="ex-solution-box" id="ex-w9-3-sol"><pre>results=<span class="fn">sorted</span>(store,key=<span class="kw">lambda</span> item: <span class="fn">cosine_sim</span>(q_emb,item[<span class="nm">1</span>]),reverse=<span class="kw">True</span>)</pre></div>
+    <div class="ex-done-banner" id="ex-w9-3-done">🎉 +35 XP! You just built ChromaDB from scratch. This is exactly what happens under the hood.</div>
+  </div>
+</div>
+
 <!-- ── BOSS BATTLES ── -->
 <h2 id="boss-battles" style="margin-top:3rem">⚔️ Boss Battles</h2>
-<p style="color:#64748b;font-size:14px;margin-bottom:1.5rem">Cross-week challenges mixing two topics. Challenge mode adds a 3-minute timer for bonus XP.</p>
 
 <div class="boss-card" id="boss-1">
   <div class="boss-title">⚔️ Boss 1 — Maths × Neural Nets</div>
@@ -2453,6 +2848,7 @@ print(f"All shapes preserved {'✅' if x.shape==out.shape else '❌'}")</textare
     <div class="badge-item"><div class="badge-icon locked" id="badge-w6" style="color:#34d399">🚀</div><div class="badge-label">Modern LLM W6</div></div>
     <div class="badge-item"><div class="badge-icon locked" id="badge-w7" style="color:#fb923c">🔧</div><div class="badge-label">MiniLLM W7</div></div>
     <div class="badge-item"><div class="badge-icon locked" id="badge-w8" style="color:#38bdf8">🤖</div><div class="badge-label">Agents W8</div></div>
+    <div class="badge-item"><div class="badge-icon locked" id="badge-w9" style="color:#a78bfa">🗂</div><div class="badge-label">RAG W9</div></div>
     <div class="badge-item"><div class="badge-icon locked" id="badge-boss1" style="color:#f59e0b">⚔️</div><div class="badge-label">Boss 1 Slayer</div></div>
     <div class="badge-item"><div class="badge-icon locked" id="badge-boss2" style="color:#f59e0b">⚔️</div><div class="badge-label">Boss 2 Slayer</div></div>
     <div class="badge-item"><div class="badge-icon locked" id="badge-streak7" style="color:#f87171">🔥</div><div class="badge-label">7-Day Streak</div></div>
@@ -2478,7 +2874,7 @@ print(f"All shapes preserved {'✅' if x.shape==out.shape else '❌'}")</textare
 <div class="overlay" id="overlay-recall">
 <div class="overlay-inner">
   <div class="overlay-header">
-    <div class="overlay-title">⚡ Quick Recall — All 8 Weeks</div>
+    <div class="overlay-title">⚡ Quick Recall — All 9 Weeks</div>
     <button class="overlay-close" onclick="document.getElementById('overlay-recall').classList.remove('open')">✕</button>
   </div>
   <div class="recall-grid">
@@ -2578,6 +2974,18 @@ print(f"All shapes preserved {'✅' if x.shape==out.shape else '❌'}")</textare
       </ul>
     </div>
 
+    <div class="recall-card rc-rag">
+      <div class="recall-card-title">🗂 Part 10 — RAG (W9)</div>
+      <ul>
+        <li>RAG = Retrieve relevant chunks → Augment prompt → Generate grounded answer</li>
+        <li>Recursive chunking (0.80) vs fixed-size (0.47): always split on natural boundaries</li>
+        <li>Contextual retrieval: LLM prepends context to every chunk before embedding. 67% fewer failures</li>
+        <li>Hybrid search: semantic catches meaning; BM25 catches exact dates/IDs/commands. RRF fuses both</li>
+        <li>Two-pass retrieval: Bi-Encoder (fast, rough top-50) → Cross-Encoder (slow, precise top-3)</li>
+        <li>U-shaped attention: place best chunks at the END of context, right before the question</li>
+      </ul>
+    </div>
+
   </div>
 </div>
 </div>
@@ -2653,13 +3061,26 @@ print(f"All shapes preserved {'✅' if x.shape==out.shape else '❌'}")</textare
   </div>
 
   <div class="formula-section">
-    <div class="formula-section-title" style="background:rgba(56,189,248,.1);color:#38bdf8">🤖 Agents & ReAct</div>
+    <div class="formula-section-title" style="background:rgba(56,189,248,.1);color:#38bdf8">🤖 Agents &amp; ReAct</div>
     <table class="formula-table">
       <tr><th>Pattern</th><th>What it is</th></tr>
       <tr><td>Agent = LLM + Tools + Loop <button class="copy-btn" onclick="navigator.clipboard.writeText('Agent = LLM + Tools + Loop')">copy</button></td><td>The fundamental agent formula</td></tr>
       <tr><td>THOUGHT → ACTION → OBSERVATION → repeat <button class="copy-btn" onclick="navigator.clipboard.writeText('THOUGHT → ACTION → OBSERVATION → repeat until FINAL_ANSWER')">copy</button></td><td>ReAct loop steps</td></tr>
       <tr><td>prompt_tokens grows every iteration <button class="copy-btn" onclick="navigator.clipboard.writeText('total_tokens += system + history + new_observation each iter')">copy</button></td><td>Context engineering problem</td></tr>
       <tr><td>softmax(logits / T) <button class="copy-btn" onclick="navigator.clipboard.writeText('probs = F.softmax(logits / temperature, dim=-1)')">copy</button></td><td>Temperature sampling. T→0=greedy, T=1=raw probs, T→∞=uniform</td></tr>
+    </table>
+  </div>
+
+  <div class="formula-section">
+    <div class="formula-section-title" style="background:rgba(167,139,250,.1);color:#a78bfa">🗂 RAG Pipelines (W9)</div>
+    <table class="formula-table">
+      <tr><th>Formula / Pattern</th><th>What it is</th></tr>
+      <tr><td>RRF score = 1/(k + rank + 1) <button class="copy-btn" onclick="navigator.clipboard.writeText('rrf_score = 1 / (k + rank + 1)')">copy</button></td><td>Reciprocal Rank Fusion score per list. Sum across all lists per doc.</td></tr>
+      <tr><td>cosine_sim(A,B) = A·B / (‖A‖·‖B‖) <button class="copy-btn" onclick="navigator.clipboard.writeText('cos_sim = dot(A,B) / (norm(A) * norm(B))')">copy</button></td><td>Vector similarity. 1=identical direction, 0=perpendicular</td></tr>
+      <tr><td>Precision = TP/(TP+FP) <button class="copy-btn" onclick="navigator.clipboard.writeText('precision = TP / (TP + FP)')">copy</button></td><td>Of all retrieved, how many were relevant? (noise metric)</td></tr>
+      <tr><td>Recall = TP/(TP+FN) <button class="copy-btn" onclick="navigator.clipboard.writeText('recall = TP / (TP + FN)')">copy</button></td><td>Of all relevant, how many were found? (coverage metric)</td></tr>
+      <tr><td>Ingestion: Parse → Chunk → Contextualize → Embed → Store <button class="copy-btn" onclick="navigator.clipboard.writeText('Ingestion: Parse → Chunk → Contextualize → Embed → Store')">copy</button></td><td>The one-time pipeline (run once or on data update)</td></tr>
+      <tr><td>Retrieval: Transform → Hybrid → Rerank → Compress → Augment <button class="copy-btn" onclick="navigator.clipboard.writeText('Retrieval: Transform → Hybrid Search → Rerank → Compress → Augment Prompt')">copy</button></td><td>The per-query real-time pipeline</td></tr>
     </table>
   </div>
 
@@ -2817,6 +3238,20 @@ const w7Q=[
 ];
 
 buildQuiz('w7q',w7Q);
+
+const w9Q=[
+  {q:"Why can't you just fine-tune an LLM to know your private documents?",opts:["It's too expensive","Fine-tuning encodes knowledge into weights unreliably — models hallucinate 'memorised' facts, can't cite sources, and can't be updated without retraining. RAG retrieves the actual document at query time.","LLMs can't be fine-tuned","Fine-tuning requires too much data"],answer:1,explanation:"Fine-tuning bakes knowledge into weights statically. When the document changes, you'd need to retrain. RAG retrieves the live document at inference time — the model always sees the current version. Also, fine-tuned models still hallucinate; RAG-sourced models can be forced to cite specific retrieved chunks."},
+  {q:"Fixed-size chunking faithfulness ~0.47. Recursive chunking ~0.80. What causes the difference?",opts:["Recursive uses larger chunks","Fixed-size splits at arbitrary character counts — frequently mid-sentence or mid-thought, destroying semantic coherence. Recursive splits at natural linguistic boundaries (paragraphs → sentences), preserving meaning.","Fixed-size has no overlap","Recursive is slower"],answer:1,explanation:"Fixed: every 200 words regardless of sentence or paragraph boundaries. Result: 'ACME's Q3 revenue of $4.2 bil — that's down from' gets split in the middle of the thought. Recursive respects \\n\\n first, then '. ', keeping each chunk semantically self-contained."},
+  {q:"You have a chunk: 'Revenue grew 3% this quarter.' Why might this chunk fail retrieval?",opts:["It's too short","The chunk has lost its identity — no company name, no year, no quarter number. The embedding captures 'revenue grew' but doesn't know it's ACME Q3 2024. Contextual retrieval fixes this by prepending document/section metadata.","Revenue is too generic a word","The chunker should have removed it"],answer:1,explanation:"Contextual retrieval (Anthropic's technique) prepends 2-3 LLM-generated sentences to every chunk before embedding: 'This excerpt is from ACME's Q3 2024 report, Revenue section.' Now the embedding captures the full context, not just the raw sentence. Result: 67% fewer retrieval failures vs naive RAG."},
+  {q:"A user asks 'What was the Slack command for rollback?'. Semantic search returns wrong results. BM25 gets it instantly. Why?",opts:["BM25 is faster","Embeddings encode meaning — 'Slack command' maps to a cluster far from '/deploy rollback'. BM25 matches exact token sequences — '/deploy rollback' is a literal string match. Exact IDs, codes, and commands are inherently keyword-match problems.","The embedding model is broken","The question is too short"],answer:1,explanation:"Semantic search excels at meaning: 'car' ≈ 'automobile'. It fails at exact strings: 'AUTH-2847' is just noise to a semantic model. BM25 (TF-IDF) matches token frequencies exactly — '/deploy rollback' found instantly. Hybrid search (semantic + BM25 via RRF) catches both cases."},
+  {q:"RRF score formula: 1/(k + rank + 1). What does k=60 do?",opts:["Limits results to 60","k dampens the impact of rank — all documents get a baseline score even if ranked last in one list. With k=60, rank-1 gets 1/61≈0.016 vs rank-60 getting 1/120≈0.008. Without k, rank-0 gets 1/1=1.0 and rank-1 gets 0.5 — too extreme.","k is the number of results returned","k is the chunk size"],answer:1,explanation:"k acts as a smoothing constant. Without it, the #1 result gets a score 60× larger than the #60 result — rank 1 dominates. With k=60, the score range is 1/61 to 1/121 — much more gradual. Documents that appear near the top in BOTH lists accumulate scores from both and rise to the top of the fused ranking."},
+  {q:"Pass 1: Bi-Encoder returns top 50. Pass 2: Cross-Encoder re-scores. What is the key architectural difference?",opts:["Cross-Encoder is larger","Bi-Encoder embeds query and document SEPARATELY — fast (pre-compute doc embeddings). Cross-Encoder reads [Query + Document] TOGETHER — slow but deep nuance. Separate encoding misses interaction; joint encoding captures exact relevance.","Bi-Encoder uses BM25","Cross-Encoder only works on short texts"],answer:1,explanation:"Bi-Encoder: embed(query) and embed(doc) independently → cosine similarity. O(N) lookups but each is fast. Cross-Encoder: transformer reads the concatenation [query, doc] together → single relevance score. Captures cross-attention between query and doc tokens — far more accurate but O(N) expensive. Hence two-pass: rough candidate selection first, precise scoring second."},
+  {q:"Why place the most important retrieved chunks at the END of the context, not the beginning?",opts:["It's easier to read","The U-shaped attention curve — LLM attention is strong at the start and end of a long context, weak in the middle ('Lost in the Middle'). Important chunks buried in the middle of 50K tokens get underweighted during generation.","Chunks at the start get truncated","It's just a convention"],answer:1,explanation:"Liu et al. (2023) showed that multi-document QA accuracy dropped dramatically when the relevant document was placed in the middle of a long context vs the start or end. After reranking, sort your top-k chunks so the most relevant is LAST (right before the 'Question:' in the prompt). The model's final-position attention bias works in your favour."},
+  {q:"HyDE: you ask 'Who invented the transformer?' — first generate a fake answer, then embed it and search. Why does this work better than embedding the question directly?",opts:["Fake answers are longer","A question embeds in a semantically sparse region of vector space. A hypothetical answer ('The Transformer architecture was introduced by Vaswani et al. in 2017...') embeds near actual answer documents. The fake answer bridges the query-document embedding gap.","The LLM corrects the fake answer","Embeddings can't handle questions"],answer:1,explanation:"Short questions are semantically sparse — few words, abstract intent. Documents are dense with factual content. HyDE generates a plausible answer paragraph (even if factually imperfect), embeds that, and uses it to search. The result: retrieval finds documents that match the STYLE and CONTENT of an answer, not just the words in a question."},
+  {q:"Precision = 0.9, Recall = 0.4. What does this mean for your RAG pipeline, and how should you fix it?",opts:["Perfect — high precision is what you want","The pipeline is very selective — 90% of retrieved chunks are relevant, but only 40% of all relevant chunks in the DB were found. The LLM often won't have the answer in context. Fix: retrieve more candidates (increase top-k in Pass 1), or improve chunking/contextualisation so relevant chunks surface more easily.","Increase the chunk size","Reduce k in RRF"],answer:1,explanation:"Recall = TP/(TP+FN). With recall 0.4, 60% of relevant chunks were NEVER retrieved — the LLM literally can't answer because the answer isn't in context. Precision = TP/(TP+FP). With precision 0.9, noise is low. Priority: fix Recall first (cast a wider net — more candidates from Pass 1, better contextualisation), then reranking will maintain precision."},
+  {q:"A RAG system answers correctly even for queries whose relevant chunks weren't retrieved. Is this a success?",opts:["Yes — the user got the right answer","No — the model used its parametric knowledge (training data) to answer, bypassing RAG entirely. This is exactly what RAG was meant to prevent: unverifiable answers. Watch the retrieved chunks, not just the final answer.","It means retrieval is perfect","It means the model needs fine-tuning"],answer:1,explanation:"This is a known failure mode. The LLM may 'know' the answer from training and generate it even when the retrieved context is irrelevant or empty. The answer looks correct but is ungrounded — it can't be cited, verified, or updated when facts change. Always evaluate chunk relevance independently from answer correctness. A correct answer from wrong chunks = a latent reliability bomb."}
+];
+buildQuiz('w9q',w9Q);
 
 const w8Q=[
   {q:"Agent = LLM + Tools + Loop. What is the most critical detail about the LLM component?",opts:["It needs a GPU","It has no inherent memory — the entire conversation history must be re-sent on every API call","It can execute tools directly","It stores state between calls"],answer:1,explanation:"The LLM is stateless. What appears as 'memory' in a chat interface is an illusion created by the application layer re-sending the full conversation history every single time. This is the root cause of the context engineering problem in agents."},
@@ -3027,6 +3462,8 @@ function checkBadges(){
   const w7Done = ['ex-w7-1','ex-w7-2','ex-w7-3'].every(k=>GS.done[k]);
   if(w7Done) unlockBadge('badge-w7');
   if(GS.done['ex-w8-1']) unlockBadge('badge-w8');
+  const w9Done = ['ex-w9-1','ex-w9-2','ex-w9-3'].every(k=>GS.done[k]);
+  if(w9Done) unlockBadge('badge-w9');
   if(GS.done['proj-nn']&&GS.done['proj-block']) unlockBadge('badge-w6');
   // restore badge visuals from saved state
   Object.keys(GS.done).filter(k=>k.endsWith('_badge')).forEach(k=>{
@@ -3043,6 +3480,7 @@ const RING_WEEKS = [
   {label:'W6 ModLLM',color:'#34d399',exKeys:[]},
   {label:'W7 MiniLLM',color:'#fb923c',exKeys:['ex-w7-1','ex-w7-2','ex-w7-3']},
   {label:'W8 Agents',color:'#38bdf8',exKeys:['ex-w8-1']},
+  {label:'W9 RAG',color:'#a78bfa',exKeys:['ex-w9-1','ex-w9-2','ex-w9-3']},
   {label:'Projects',color:'#f59e0b',exKeys:['proj-nn','proj-block']},
 ];
 function updateRings(){
